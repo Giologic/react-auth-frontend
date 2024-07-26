@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { signUpWithEmail } from "../services/auth"
-import { User } from "firebase/auth"
 
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
