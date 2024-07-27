@@ -1,6 +1,6 @@
-import { useState } from "react"
-import { signUpWithEmail } from "../services/auth"
-
+import { signInWithEmail } from "../services/auth";
+import { ISignInFormData } from "../types";
+import { useState } from "react";
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -14,17 +14,13 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { createUser } from "../services/firestore";
-import { ISignUpFormData } from "../types";
 
-function SignUpPage() {
-  
-  const [formData, setFormData] = useState<ISignUpFormData>({
-    lastName: '',
-    firstName: '',
+function SignInPage() {
+
+  const [formData, setFormData] = useState<ISignInFormData>({
     email: '',
     password: '',
-  })
+  });
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -36,11 +32,13 @@ function SignUpPage() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const { email, password, firstName, lastName } = formData;
-    const user = await signUpWithEmail(email, password);
+    const { email, password } = formData;
+    const user = await signInWithEmail(email, password);
+
     if (user) {
-      await createUser(user.uid, firstName, lastName);
+      console.log("Connected Successfully, Logged in as: $s", user.email)
     }
+    
   }
 
   const defaultTheme = createTheme();
@@ -61,35 +59,10 @@ function SignUpPage() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign up
+            Sign in
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="given-name"
-                  name="firstName"
-                  required
-                  fullWidth
-                  id="firstName"
-                  label="First Name"
-                  value={formData.firstName}
-                  onChange={handleInputChange}
-                  autoFocus
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleInputChange}
-                  autoComplete="family-name"
-                />
-              </Grid>
               <Grid item xs={12}>
                 <TextField
                   required
@@ -115,12 +88,6 @@ function SignUpPage() {
                   onChange={handleInputChange}
                 />
               </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="I want to receive inspiration, marketing promotions and updates via email."
-                />
-              </Grid>
             </Grid>
             <Button
               type="submit"
@@ -128,12 +95,12 @@ function SignUpPage() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign Up
+              Sign In
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
                 <Link href="#" variant="body2">
-                  Already have an account? Sign in
+                  Don't have an account yet? Sign up
                 </Link>
               </Grid>
             </Grid>
@@ -142,7 +109,6 @@ function SignUpPage() {
       </Container>
     </ThemeProvider>
   )
-  
 }
 
-export default SignUpPage 
+export default SignInPage;
